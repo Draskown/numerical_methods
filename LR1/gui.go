@@ -2,6 +2,7 @@ package lr1
 
 import (
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
@@ -15,8 +16,11 @@ func SetUi(a fyne.App) {
 
 	// Create additional windows
 	w1 := a.NewWindow("Approximation")
+	w1.Resize(fyne.NewSize(500, 500))
 	w2 := a.NewWindow("Polynom")
+	w2.Resize(fyne.NewSize(500, 500))
 
+	// Create needed labels
 	titleApproximation := widget.NewLabel("Approximation at a:")
 	titleApproximation.Alignment = fyne.TextAlignCenter
 
@@ -37,6 +41,11 @@ func SetUi(a fyne.App) {
 	// Create a button to show Approximation window
 	btnApproximation := widget.NewButton("Show approximation", func() {
 		CreateGraph()
+
+		img := canvas.NewImageFromFile("D:/Projects/Go/LRs/LR1/polynom.png")
+
+		w1.SetContent(img)
+
 		w1.Show()
 	})
 
@@ -46,7 +55,7 @@ func SetUi(a fyne.App) {
 	})
 
 	// Set a layout for the main window
-	vBox := container.New(layout.NewVBoxLayout(),
+	vBox := container.NewVBox(
 		layout.NewSpacer(),
 		btnCalculate,
 		layout.NewSpacer(),
@@ -62,10 +71,11 @@ func SetUi(a fyne.App) {
 		layout.NewSpacer(),
 	)
 
-	hBox := container.New(layout.NewHBoxLayout(),
+	hBox := container.NewHBox(
 		layout.NewSpacer(),
 		vBox,
-		layout.NewSpacer())
+		layout.NewSpacer(),
+	)
 
 	// Handle hiding the additional windows
 	// Instead of closing them

@@ -8,8 +8,6 @@ import (
 	"gonum.org/v1/plot/vg"
 )
 
-var A = "Fuck"
-
 func CreateGraph() {
 	// Create a new plot with a title and axis labels
 	p := plot.New()

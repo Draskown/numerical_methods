@@ -9,8 +9,6 @@ import (
 func main() {
 	a := app.New()
 
-	one.CreateGraph()
-
 	one.SetUi(a)
 
 	a.Run()
