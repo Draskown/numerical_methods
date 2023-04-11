@@ -104,7 +104,6 @@ func SetUi(a fyne.App) {
 	labelSim := widget.NewLabel("0.000")
 	labelSim.Alignment = fyne.TextAlignCenter
 
-
 	// Set a layout for the integral window
 	vBoxInt := container.NewVBox(
 		layout.NewSpacer(),
@@ -133,6 +132,7 @@ func SetUi(a fyne.App) {
 
 	wInt.SetContent(hBoxInt)
 
+	// Calculate derivatives on the button click
 	btnDer := widget.NewButton("Calculate Derivative", func() {
 		dx, ddx := CalculateDerivatives()
 
@@ -142,8 +142,14 @@ func SetUi(a fyne.App) {
 		wDer.Show()
 	})
 
+	// Calculate integrals on the button click
 	btnInt := widget.NewButton("Calculate Integral", func() {
-		// Calculate integrals
+		NK, S, T, Sim := CalculateIntegrals()
+
+		labelNK.SetText(fmt.Sprintf("%.4f", NK))
+		labelS.SetText(fmt.Sprintf("%.4f", S))
+		labelT.SetText(fmt.Sprintf("%.4f", T))
+		labelSim.SetText(fmt.Sprintf("%.4f", Sim))
 
 		wInt.Show()
 	})
