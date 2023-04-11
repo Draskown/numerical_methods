@@ -37,12 +37,12 @@ func SetUi(a fyne.App) {
 
 	btnPolynom := widget.NewButton("Show polynomial", func() {
 		val, err := CreatePolynomialGraph()
-		
+
 		labelPolynomial.SetText(fmt.Sprintf("%v", val))
 		labelError.SetText(fmt.Sprintf("%v", err))
 
 		img := canvas.NewImageFromFile("LR1/polynomial.png")
-		
+
 		w2.SetContent(img)
 
 		w2.Show()

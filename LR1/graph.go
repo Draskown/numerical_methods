@@ -9,54 +9,38 @@ import (
 	"gonum.org/v1/plot/vg"
 )
 
-
 // Defines a function to be interpolated
 func f(x float64) float64 {
-	return math.Pow(math.Log(x), 12.0/11.0)
+	return math.Pow(math.Log(x), 13/4)
 }
 
 // Define global values to hold input data
-var x = []float64{10, 12, 14}
+var x = []float64{2, 3, 4}
 var y = []float64{f(x[0]), f(x[1]), f(x[2])}
-var a = 13.5
+var a = 2.5
 
-// Calculates the polynomial
-func calculatePolynomial(t float64, x []float64, y []float64) float64{
-	n := len(x)
 
-	var s float64
-	var p float64
+// Calculates the polynomial at the given point
+func calculatePolynomial(t float64, x []float64, y []float64) float64 {
+    n := len(x)
+    
+    var s float64 = 0
+    var p float64
 
-	for i := 0; i < n; i++ {
-		p = y[i]
+    for i := 0; i < n; i++ {
+        p = 1
 
-		for j := 0; j < n; j++ {
-			if i != j {
-				if x[i]-x[j] == 0 {
-					p = 0.0
-				} else {
-					p *= (t - x[j]) / (x[i] - x[j])
-				}
-			}
-			s += p
-		}
-	}
-	return s
+        for j := 0; j < n; j++ {
+            if i != j {
+                p *= (t - x[j]) / (x[i] - x[j])
+            }
+        }
+
+        s += y[i]*p
+    }
+
+    return s
 }
-
-/*
-
-x = 2, 3, 4
-y = 0.3039, 1.3575, 2.89088
-
-0.3039*((x-3)*(x-4))/((2-3)*(2-4)) + 1.3575*((x-2)*(x-3))/((3-2)*(3-4)) + 2.89088*((x-2)*(x-1))/((4-2)*(4-3))
-
-L = 0.23989x^2 + 1.38753x - 3.43072
-
-With x = 2.5, L = 
-
-*/
-
 
 
 // Creates a plot of the interpolated func
@@ -111,6 +95,7 @@ func CreatePolynomialGraph() (float64, float64){
     return polynomialA, error
 }
 
+
 // Calculates the approximation of the function
 func calculateApproximation(t float64, x []float64, y []float64) (float64, float64) {
     sumX, sumY, sumXY, sumX2 := 0.0, 0.0, 0.0, 0.0
@@ -120,11 +105,13 @@ func calculateApproximation(t float64, x []float64, y []float64) (float64, float
         sumXY += x[i] * y[i]
         sumX2 += x[i] * x[i]
     }
+
     m := (float64(len(x))*sumXY - sumX*sumY) / (float64(len(x))*sumX2 - sumX*sumX)
     b := (sumY - m*sumX) / float64(len(x))
     
     return m, b
 }
+
 
 // Creates a plot of the approximated func
 func CreateApproximationGraph() float64 {
