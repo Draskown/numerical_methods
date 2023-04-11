@@ -12,6 +12,6 @@ Function:
 ## LR2
 Solves derivatives and integrals for the given function
 
-Functoin: 
+Function: 
 
 ![Given function for LR2](./images/function_lr2.png?raw=true)
