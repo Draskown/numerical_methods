@@ -1,5 +1,6 @@
 package lr2
 
+// Calculates integrals for the input function
 func CalculateIntegrals() (float64, float64, float64, float64) {
 	// Length of the array
 	n := len(X)
