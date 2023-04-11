@@ -41,7 +41,7 @@ func SetUi(a fyne.App) {
 		labelPolynomial.SetText(fmt.Sprintf("%v", val))
 		labelError.SetText(fmt.Sprintf("%v", err))
 
-		img := canvas.NewImageFromFile("LR1/polynomial.png")
+		img := canvas.NewImageFromFile("lr1_polynomial.png")
 
 		w2.SetContent(img)
 

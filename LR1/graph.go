@@ -49,8 +49,8 @@ func CreatePolynomialGraph() (float64, float64){
     dataFunc := make(plotter.XYs, 0)    
     dataPol := make(plotter.XYs, 0)
 
-    for i := 10; i <= 40; i++ {
-        dX := float64(i) / 10
+    for i := x[0]; i <= x[2] + 0.0000001; i += 0.2 {
+        dX := i
         dY := calculatePolynomial(dX, x, y)
         dataPol = append(dataPol, plotter.XY{X: dX, Y: dY})
         dataFunc = append(dataFunc, plotter.XY{X: dX, Y: f(dX)})
@@ -85,7 +85,7 @@ func CreatePolynomialGraph() (float64, float64){
     p.Legend.Add("Polynomial", linePol)
     
     // Save the plot to a PNG file
-    if err := p.Save(4*vg.Inch, 4*vg.Inch, "LR1/polynomial.png"); err != nil {
+    if err := p.Save(4*vg.Inch, 4*vg.Inch, "lr1_polynomial.png"); err != nil {
         panic(err)
     }
 
