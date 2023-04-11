@@ -1,7 +1,7 @@
 package main
 
 import (
-	one "LRs/LR1"
+	two "LRs/LR2"
 
 	"fyne.io/fyne/v2/app"
 )
@@ -9,7 +9,7 @@ import (
 func main() {
 	a := app.New()
 
-	one.SetUi(a)
+	two.SetUi(a)
 
 	a.Run()
 }

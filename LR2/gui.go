@@ -12,7 +12,7 @@ import (
 // Sets a GUI for passed application
 func SetUi(a fyne.App) {
 	// Create the main window
-	w := a.NewWindow("LR1")
+	w := a.NewWindow("LR2")
 	w.SetMaster()
 
 	// Create needed labels
@@ -54,6 +54,7 @@ func SetUi(a fyne.App) {
 		labelDDX,
 		layout.NewSpacer(),
 		btn,
+		layout.NewSpacer(),
 	)
 
 	hBox := container.NewHBox(
@@ -63,6 +64,5 @@ func SetUi(a fyne.App) {
 	)
 
 	w.SetContent(hBox)
-	w.Resize(fyne.NewSize(300, 400))
 	w.Show()
 }
