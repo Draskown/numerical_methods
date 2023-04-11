@@ -1,6 +1,8 @@
 package lr1
 
 import (
+	"fmt"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
@@ -21,51 +23,39 @@ func SetUi(a fyne.App) {
 	w2.Resize(fyne.NewSize(500, 500))
 
 	// Create needed labels
-	titleApproximation := widget.NewLabel("Approximation at a:")
-	titleApproximation.Alignment = fyne.TextAlignCenter
+	titlePolynomial := widget.NewLabel("Polynomial at a:")
+	titlePolynomial.Alignment = fyne.TextAlignCenter
 
-	labelAppoximation := widget.NewLabel("0.0")
-	labelAppoximation.Alignment = fyne.TextAlignCenter
+	labelPolynomial := widget.NewLabel("0.0")
+	labelPolynomial.Alignment = fyne.TextAlignCenter
 
-	titlePolynom := widget.NewLabel("Polynom at a:")
-	titlePolynom.Alignment = fyne.TextAlignCenter
+	titleError := widget.NewLabel("Error of the polynomial:")
+	titleError.Alignment = fyne.TextAlignCenter
 
-	labelPolynom := widget.NewLabel("0.0")
-	labelPolynom.Alignment = fyne.TextAlignCenter
+	labelError := widget.NewLabel("0.0")
+	labelError.Alignment = fyne.TextAlignCenter
 
-	// Create a button for calculation
-	btnCalculate := widget.NewButton("Calculate", func() {
-		// Calculate
-	})
+	btnPolynom := widget.NewButton("Show polynomial", func() {
+		val, err := CreatePolynomialGraph()
+		
+		labelPolynomial.SetText(fmt.Sprintf("%v", val))
+		labelError.SetText(fmt.Sprintf("%v", err))
 
-	// Create a button to show Approximation window
-	btnApproximation := widget.NewButton("Show approximation", func() {
-		CreateGraph()
+		img := canvas.NewImageFromFile("LR1/polynomial.png")
+		
+		w2.SetContent(img)
 
-		img := canvas.NewImageFromFile("D:/Projects/Go/LRs/LR1/polynom.png")
-
-		w1.SetContent(img)
-
-		w1.Show()
-	})
-
-	btnPolynom := widget.NewButton("Show polynom", func() {
-		// Create graph
 		w2.Show()
 	})
 
 	// Set a layout for the main window
 	vBox := container.NewVBox(
 		layout.NewSpacer(),
-		btnCalculate,
+		titlePolynomial,
+		labelPolynomial,
 		layout.NewSpacer(),
-		titleApproximation,
-		labelAppoximation,
-		layout.NewSpacer(),
-		titlePolynom,
-		labelPolynom,
-		layout.NewSpacer(),
-		btnApproximation,
+		titleError,
+		labelError,
 		layout.NewSpacer(),
 		btnPolynom,
 		layout.NewSpacer(),

@@ -5,48 +5,180 @@ import (
 
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
 	"gonum.org/v1/plot/vg"
 )
 
-func CreateGraph() {
-	// Create a new plot with a title and axis labels
-	p := plot.New()
 
-	p.Title.Text = "ln(x)^13/4"
-	p.X.Label.Text = "x"
-	p.Y.Label.Text = "y"
+// Defines a function to be interpolated
+func f(x float64) float64 {
+	return math.Pow(math.Log(x), 12.0/11.0)
+}
 
-	// Define the function to be plotted
-	f := func(x float64) float64 {
-		return math.Pow(math.Log(x), 13.0/4.0)
-	}
+// Define global values to hold input data
+var x = []float64{10, 12, 14}
+var y = []float64{f(x[0]), f(x[1]), f(x[2])}
+var a = 13.5
 
-	// Create a set of data points for the function over the interval [1, 10]
-	n := 100
-	data := make(plotter.XYs, n)
+// Calculates the polynomial
+func calculatePolynomial(t float64, x []float64, y []float64) float64{
+	n := len(x)
+
+	var s float64
+	var p float64
+
 	for i := 0; i < n; i++ {
-		x := 1.0 + float64(i)*(10.0-1.0)/float64(n-1)
-		data[i].X = x
-		data[i].Y = f(x)
+		p = y[i]
+
+		for j := 0; j < n; j++ {
+			if i != j {
+				if x[i]-x[j] == 0 {
+					p = 0.0
+				} else {
+					p *= (t - x[j]) / (x[i] - x[j])
+				}
+			}
+			s += p
+		}
 	}
+	return s
+}
 
-	// Create a line plot for the data points
-	line, err := plotter.NewLine(data)
-	if err != nil {
-		panic(err)
-	}
+/*
 
-	// Add the line plot to the plot
-	p.Add(line)
+x = 2, 3, 4
+y = 0.3039, 1.3575, 2.89088
 
-	// Set the range of the x and y axis
-	p.X.Min = 1.0
-	p.X.Max = 10.0
-	p.Y.Min = 0.0
+0.3039*((x-3)*(x-4))/((2-3)*(2-4)) + 1.3575*((x-2)*(x-3))/((3-2)*(3-4)) + 2.89088*((x-2)*(x-1))/((4-2)*(4-3))
 
-	// Save the plot to a PNG file
-	err = p.Save(10*vg.Centimeter, 10*vg.Centimeter,"./LR1/polynom.png")
-	if err != nil {
-		panic(err)
-	}
+L = 0.23989x^2 + 1.38753x - 3.43072
+
+With x = 2.5, L = 
+
+*/
+
+
+
+// Creates a plot of the interpolated func
+func CreatePolynomialGraph() (float64, float64){
+    // Define the dataPol points for the interpolated function
+    dataFunc := make(plotter.XYs, 0)    
+    dataPol := make(plotter.XYs, 0)
+
+    for i := 10; i <= 40; i++ {
+        dX := float64(i) / 10
+        dY := calculatePolynomial(dX, x, y)
+        dataPol = append(dataPol, plotter.XY{X: dX, Y: dY})
+        dataFunc = append(dataFunc, plotter.XY{X: dX, Y: f(dX)})
+    }
+
+    // Create the plot and set the title
+    p := plot.New()
+	
+    p.Title.Text = "Interpolated Function Graph for ln(x)^13/4"
+
+    // Set the X and Y axis labels
+    p.X.Label.Text = "x"
+    p.Y.Label.Text = "y"
+
+    // Add the data points to the plot
+    linePol, err := plotter.NewLine(dataPol)
+    if err != nil {
+        panic(err)
+    }
+    linePol.LineStyle.Color = plotutil.SoftColors[0]
+    p.Add(linePol)
+    
+    funcLine, err := plotter.NewLine(dataFunc)
+    if err != nil {
+        panic(err)
+    }
+    funcLine.Color = plotutil.SoftColors[1]
+    p.Add(funcLine)
+    
+    // Add a legend to the plot
+    p.Legend.Add("Function", funcLine)
+    p.Legend.Add("Polynomial", linePol)
+    
+    // Save the plot to a PNG file
+    if err := p.Save(4*vg.Inch, 4*vg.Inch, "LR1/polynomial.png"); err != nil {
+        panic(err)
+    }
+
+    polynomialA := calculatePolynomial(a, x, y)
+    error := math.Abs(f(a) - polynomialA)
+
+    return polynomialA, error
+}
+
+// Calculates the approximation of the function
+func calculateApproximation(t float64, x []float64, y []float64) (float64, float64) {
+    sumX, sumY, sumXY, sumX2 := 0.0, 0.0, 0.0, 0.0
+    for i := 0; i < len(x); i++ {
+        sumX += x[i]
+        sumY += y[i]
+        sumXY += x[i] * y[i]
+        sumX2 += x[i] * x[i]
+    }
+    m := (float64(len(x))*sumXY - sumX*sumY) / (float64(len(x))*sumX2 - sumX*sumX)
+    b := (sumY - m*sumX) / float64(len(x))
+    
+    return m, b
+}
+
+// Creates a plot of the approximated func
+func CreateApproximationGraph() float64 {
+    // Linear least-squares approximation
+    m, b := calculateApproximation(a, x, y)
+
+    res := math.Pow(math.Log(a), 13.0/14.0)*m + b
+
+    // Create data points for plotting the function and the approximation
+    nPoints := 50
+    minX, maxX := 1.5, 4.5
+    stepX := (maxX - minX) / float64(nPoints-1)
+    ptsFunc := make(plotter.XYs, nPoints)
+    ptsApprox := make(plotter.XYs, nPoints)
+    for i := 0; i < nPoints; i++ {
+        dX := minX + float64(i)*stepX
+        ptsFunc[i].X = dX
+        ptsFunc[i].Y = f(dX)
+        ptsApprox[i].X = dX
+        ptsApprox[i].Y = m*math.Log(dX) + b
+    }
+
+    // Create a new plot
+    p := plot.New()
+    
+    p.Title.Text = "Linear least-squares approximation for ln(x)^13/4"
+    p.X.Label.Text = "x"
+    p.Y.Label.Text = "y"
+
+    // Add data points to the plot
+    funcLine, err := plotter.NewLine(ptsFunc)
+    if err != nil {
+        panic(err)
+    }
+    funcLine.LineStyle.Width = vg.Points(1)
+    funcLine.LineStyle.Dashes = []vg.Length{vg.Points(5), vg.Points(5)}
+    funcLine.Color = plotutil.SoftColors[0]
+    p.Add(funcLine)
+
+    approxLine, err := plotter.NewLine(ptsApprox)
+    if err != nil {
+        panic(err)
+    }
+    approxLine.LineStyle.Width = vg.Points(1)
+    approxLine.Color = plotutil.SoftColors[1]
+    p.Add(approxLine)
+
+    // Add a legend to the plot
+    p.Legend.Add("Function", funcLine)
+    p.Legend.Add("Approximation", approxLine)
+    
+    if err := p.Save(4*vg.Inch, 4*vg.Inch, "LR1/approximation.png"); err != nil {
+        panic(err)
+    }
+
+    return res
 }
