@@ -16,6 +16,7 @@ func SetUi(a fyne.App) {
 	w.Resize(fyne.NewSize(300, 100))
 	w.SetMaster()
 
+	// Set a window for the Euler's solution
 	wEuler := a.NewWindow("Euler")
 
 	wEuler.SetCloseIntercept(func() {
@@ -29,17 +30,31 @@ func SetUi(a fyne.App) {
 	vBoxEulerX.Add(widget.NewLabel("One equation:"))
 	vBoxEulerY.Add(widget.NewLabel(""))
 
+	vBoxEulerXS := container.NewVBox()
+	vBoxEulerYS := container.NewVBox()
+	vBoxEulerZS := container.NewVBox()
+
+	vBoxEulerXS.Add(widget.NewLabel("System of equations:"))
+	vBoxEulerYS.Add(widget.NewLabel(""))
+	vBoxEulerZS.Add(widget.NewLabel(""))
+
 	// Set a button to calculate and fill the Euler's window
 	btnEuler := widget.NewButton("Euler", func() {
 		x, y := Euler()
 
+		var z []float64
+
+		var xText string
+		var yText string
+		var zText string
+
 		for i := -1; i < len(x); i++ {
-			xText := "X"
-			yText := "Y"
+			xText = "X"
+			yText = "Y"
 
 			if (i > -1){
 				xText = fmt.Sprintf("%.2f", x[i])
-				yText = fmt.Sprintf("%.2f", y[i])
+				yText = fmt.Sprintf("%.3f", y[i])
 			}
 			
 			vBoxEulerX.Add(widget.NewLabelWithStyle(
@@ -53,21 +68,150 @@ func SetUi(a fyne.App) {
 				fyne.TextStyle{}))
 		}
 
-		hBoxEuler := container.NewHBox(
+		x, y, z = EulerSystem()
+
+		for i := -1; i < len(x); i++ {
+			xText = "X"
+			yText = "Y"
+			zText = "Z"
+
+			if (i > -1){
+				xText = fmt.Sprintf("%.2f", x[i])
+				yText = fmt.Sprintf("%.3f", y[i])
+				zText = fmt.Sprintf("%.3f", z[i])
+			}
+			
+			vBoxEulerXS.Add(widget.NewLabelWithStyle(
+				xText,
+				fyne.TextAlignCenter, 
+				fyne.TextStyle{}))
+
+			vBoxEulerYS.Add(widget.NewLabelWithStyle(
+				yText,
+				fyne.TextAlignCenter, 
+				fyne.TextStyle{}))
+
+			vBoxEulerZS.Add(widget.NewLabelWithStyle(
+				zText,
+				fyne.TextAlignCenter, 
+				fyne.TextStyle{}))
+		}
+
+		hBox := container.NewHBox(
 			vBoxEulerX,
 			vBoxEulerY,
 			widget.NewSeparator(),
+			vBoxEulerXS,
+			vBoxEulerYS,
+			vBoxEulerZS,
 		)
 
-		wEuler.SetContent(hBoxEuler)
+		wEuler.SetContent(hBox)
 
 		wEuler.Show()
+	})
+
+	// Set a window for the Runge-Kutte's solution
+	wRungeKutte := a.NewWindow("Runge-Kutte")
+
+	wRungeKutte.SetCloseIntercept(func() {
+		wRungeKutte.Hide()
+	})
+
+	// Set a layout for the Runge-Kutte window
+	vBoxRKX := container.NewVBox()
+	vBoxRKY := container.NewVBox()
+
+	vBoxRKX.Add(widget.NewLabel("One equation:"))
+	vBoxRKY.Add(widget.NewLabel(""))
+
+	vBoxRKXS := container.NewVBox()
+	vBoxRKYS := container.NewVBox()
+	vBoxRKZS := container.NewVBox()
+
+	vBoxRKXS.Add(widget.NewLabel("System of equations:"))
+	vBoxRKYS.Add(widget.NewLabel(""))
+	vBoxRKZS.Add(widget.NewLabel(""))
+
+	// Set a button to calculate and fill the Euler's window
+	btnRungeKutta := widget.NewButton("Runge-Kutte", func() {
+		x, y := RungeKutte()
+
+		var z []float64
+
+		var xText string
+		var yText string
+		var zText string
+
+		for i := -1; i < len(x); i++ {
+			xText = "X"
+			yText = "Y"
+
+			if (i > -1){
+				xText = fmt.Sprintf("%.2f", x[i])
+				yText = fmt.Sprintf("%.3f", y[i])
+			}
+			
+			vBoxRKX.Add(widget.NewLabelWithStyle(
+				xText,
+				fyne.TextAlignCenter, 
+				fyne.TextStyle{}))
+
+			vBoxRKY.Add(widget.NewLabelWithStyle(
+				yText,
+				fyne.TextAlignCenter, 
+				fyne.TextStyle{}))
+		}
+
+		x, y, z = RungeKutteSystem()
+
+		for i := -1; i < len(x); i++ {
+			xText = "X"
+			yText = "Y"
+			zText = "Z"
+
+			if (i > -1){
+				xText = fmt.Sprintf("%.2f", x[i])
+				yText = fmt.Sprintf("%.3f", y[i])
+				zText = fmt.Sprintf("%.3f", z[i])
+			}
+			
+			vBoxRKXS.Add(widget.NewLabelWithStyle(
+				xText,
+				fyne.TextAlignCenter, 
+				fyne.TextStyle{}))
+
+			vBoxRKYS.Add(widget.NewLabelWithStyle(
+				yText,
+				fyne.TextAlignCenter, 
+				fyne.TextStyle{}))
+
+			vBoxRKZS.Add(widget.NewLabelWithStyle(
+				zText,
+				fyne.TextAlignCenter, 
+				fyne.TextStyle{}))
+		}
+
+		hBox := container.NewHBox(
+			vBoxRKX,
+			vBoxRKY,
+			widget.NewSeparator(),
+			vBoxRKXS,
+			vBoxRKYS,
+			vBoxRKZS,
+		)
+
+		wRungeKutte.SetContent(hBox)
+
+		wRungeKutte.Show()
 	})
 
 	// Set a layout for the main window
 	vBoxMain := container.NewVBox(
 		layout.NewSpacer(),
 		btnEuler,
+		layout.NewSpacer(),
+		btnRungeKutta,
 		layout.NewSpacer(),
 	)
 
