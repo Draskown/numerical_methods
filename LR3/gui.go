@@ -301,6 +301,98 @@ func SetUi(a fyne.App) {
 		wMilne.Show()
 	})
 
+	// Set a window for the Adams's solution
+	wAdams := a.NewWindow("Adams")
+
+	wAdams.SetCloseIntercept(func() {
+		wAdams.Hide()
+	})
+
+	// Set a layout for the Adams window
+	vBoxAX := container.NewVBox()
+	vBoxAY := container.NewVBox()
+
+	vBoxAX.Add(widget.NewLabel("One equation:"))
+	vBoxAY.Add(widget.NewLabel(""))
+	vBoxAXS := container.NewVBox()
+	vBoxAYS := container.NewVBox()
+	vBoxAZS := container.NewVBox()
+
+	vBoxAXS.Add(widget.NewLabel("System of equations:"))
+	vBoxAYS.Add(widget.NewLabel(""))
+	vBoxAZS.Add(widget.NewLabel(""))
+
+	// Calculate the Adams's solution
+	x, y = Adams()
+
+	// Fill in the answers
+	for i := -1; i < len(x); i++ {
+		xText = "X"
+		yText = "Y"
+
+		if (i > -1){
+			xText = fmt.Sprintf("%.2f", x[i])
+			yText = fmt.Sprintf("%.3f", y[i])
+		}
+		
+		vBoxAX.Add(widget.NewLabelWithStyle(
+			xText,
+			fyne.TextAlignCenter, 
+			fyne.TextStyle{}))
+
+		vBoxAY.Add(widget.NewLabelWithStyle(
+			yText,
+			fyne.TextAlignCenter, 
+			fyne.TextStyle{}))
+	}
+
+	// Calculate the Adams's solution for the system
+	x, y, z = AdamsSystem()
+
+	// Fill in the answers
+	for i := -1; i < len(x); i++ {
+		xText = "X"
+		yText = "Y"
+		zText = "Z"
+
+		if (i > -1){
+			xText = fmt.Sprintf("%.2f", x[i])
+			yText = fmt.Sprintf("%.3f", y[i])
+			zText = fmt.Sprintf("%.3f", z[i])
+		}
+		
+		vBoxAXS.Add(widget.NewLabelWithStyle(
+			xText,
+			fyne.TextAlignCenter, 
+			fyne.TextStyle{}))
+
+		vBoxAYS.Add(widget.NewLabelWithStyle(
+			yText,
+			fyne.TextAlignCenter, 
+			fyne.TextStyle{}))
+
+		vBoxAZS.Add(widget.NewLabelWithStyle(
+			zText,
+			fyne.TextAlignCenter, 
+			fyne.TextStyle{}))
+	}
+
+	hBoxA := container.NewHBox(
+		vBoxAX,
+		vBoxAY,
+		widget.NewSeparator(),
+		vBoxAXS,
+		vBoxAYS,
+		vBoxAZS,
+	)
+
+	wAdams.SetContent(hBoxA)
+
+	// Set a button to calculate and fill the Adams window
+	btnAdams := widget.NewButton("Adams", func() {
+		wAdams.Show()
+	})
+
 	// Set a layout for the main window
 	vBoxMain := container.NewVBox(
 		layout.NewSpacer(),
@@ -308,7 +400,8 @@ func SetUi(a fyne.App) {
 		layout.NewSpacer(),
 		btnRungeKutta,
 		layout.NewSpacer(),
-		// Adams
+		btnAdams,
+		layout.NewSpacer(),
 		btnMilne,
 		layout.NewSpacer(),
 	)
