@@ -1,6 +1,9 @@
-# numerical_methods
+# Go Numerical Methods
 A bunch of projects build around different numerical methods for solving mathematical problems
 
+## Usage
+
+Download the project, change the import inside of the `main.go` file to either of the modules, enter command `go run main.go`.
 
 ## LR1
 Solves a polynomical for a specified function and outputs it as a graph in a file and inside the second window
